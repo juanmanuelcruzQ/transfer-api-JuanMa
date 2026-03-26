@@ -1,16 +1,16 @@
 services:
 
-  mongodb:
-    image: mongo:4.4
-    container_name: transfers-mongodb
-    restart: always
-    ports:
-      - "27017:27017"
+  mysqldb:
+    image: mysql:8.0
+    container_name: mysql-db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: transfers_db
+    ports:
+      - "3306:3306"
     volumes:
-      - mongo_data:/data/db
+      - mysql_data:/var/lib/mysql
+    restart: always
 
   app:
     image: transfers-api:0.1.0
@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
     container_name: transfers-api
     depends_on:
-      - mongodb
+      - mysqldb
     ports:
       - "8080:8080"
 
@@ -27,16 +27,18 @@ services:
       # ---- Business ----
       TRANSFER_MIN_AMOUNT: 1
 
-      # ---- Mongo ----
-      MONGODB_CONNECT_TIMEOUT: 10s
-      MONGODB_HOSTNAME: mongodb
-      MONGODB_PORT: 27017
-      MONGODB_USERNAME: root
-      MONGODB_PASSWORD: root
-      MONGODB_DATABASE: transfers-db
-      MONGODB_COLLECTION: transfers
+      # ---- MySQL ----
+      MYSQL_CONNECT_TIMEOUT: 10s
+      MYSQL_HOST: mysqldb
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: transfers_db
+
+      MYSQL_MAX_OPEN_CONNS: 25
+      MYSQL_MAX_IDLE_CONNS: 25
 
     restart: always
 
 volumes:
-  mongo_data:
+  mysql_data:
