@@ -21,17 +21,23 @@ type TransfersRepository interface {
 	Delete(ctx context.Context, id string) error
 }
 
-type TransfersService struct {
-	businessCfg     config.BusinessConfig
-	transfersRepo   TransfersRepository
-	transfersCCache TransfersRepository
+type TransfersPublisher interface {
+	Publish(operation string, transferID string) error
 }
 
-func NewTransfersService(businessCfg config.BusinessConfig, transfersRepo TransfersRepository, transfersCCache TransfersRepository) *TransfersService {
+type TransfersService struct {
+	businessCfg        config.BusinessConfig
+	transfersRepo      TransfersRepository
+	transfersCCache    TransfersRepository
+	transfersPublisher TransfersPublisher
+}
+
+func NewTransfersService(businessCfg config.BusinessConfig, transfersRepo TransfersRepository, transfersCCache TransfersRepository, transfersPublisher TransfersPublisher) *TransfersService {
 	return &TransfersService{
-		businessCfg:     businessCfg,
-		transfersRepo:   transfersRepo,
-		transfersCCache: transfersCCache,
+		businessCfg:        businessCfg,
+		transfersRepo:      transfersRepo,
+		transfersCCache:    transfersCCache,
+		transfersPublisher: transfersPublisher,
 	}
 }
 
@@ -56,6 +62,13 @@ func (s *TransfersService) Create(ctx context.Context, transfer models.Transfer)
 		return "", fmt.Errorf("error creating transfer in repository: %w", err)
 	}
 	logging.Logger.Infof("Transfer created in DB with ID: %s", id)
+
+	// Publish transfer creation event
+	go func() {
+		if err := s.transfersPublisher.Publish("created", id); err != nil {
+			logging.Logger.Warnf("error publishing transfer creation event: %v", err)
+		}
+	}()
 
 	transfer.ID = id
 	if _, err := s.transfersCCache.Create(ctx, transfer); err != nil {
@@ -103,6 +116,13 @@ func (s *TransfersService) Update(ctx context.Context, transfer models.Transfer)
 		return fmt.Errorf("error updating transfer %s in repository: %w", transfer.ID, err)
 	}
 
+	// Publish transfer update event
+	go func() {
+		if err := s.transfersPublisher.Publish("updated", transfer.ID); err != nil {
+			logging.Logger.Warnf("error publishing transfer update event: %v", err)
+		}
+	}()
+
 	if err := s.transfersCCache.Update(ctx, transfer); err != nil {
 		logging.Logger.Warnf("error updating transfer in ccache: %w", err)
 	}
@@ -114,6 +134,13 @@ func (s *TransfersService) Delete(ctx context.Context, id string) error {
 	if err := s.transfersRepo.Delete(ctx, id); err != nil {
 		return fmt.Errorf("error deleting transfer %s from repository: %w", id, err)
 	}
+
+	// Publish transfer deletion event
+	go func() {
+		if err := s.transfersPublisher.Publish("deleted", id); err != nil {
+			logging.Logger.Warnf("error publishing transfer deletion event: %v", err)
+		}
+	}()
 
 	if err := s.transfersCCache.Delete(ctx, id); err != nil {
 		logging.Logger.Warnf("error deleting transfer from ccache: %w", err)
