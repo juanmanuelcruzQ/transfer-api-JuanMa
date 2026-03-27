@@ -1,0 +1,15 @@
+packages:
+  transfer-api/internal/service:
+    interface:
+      TransferRepository:
+        config:
+          output: ./internal/service/mocks
+          outpackage: mocks
+          filename: transfer_repository_mock.go
+          mockname: TransferRepositoryMock
+      TransfersPublisher:
+        config:
+          output: ./internal/service/mocks
+          outpackage: mocks
+          filename: transfers_publisher_mock.go
+          mockname: TransfersPublisherMock

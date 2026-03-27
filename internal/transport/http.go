@@ -32,7 +32,6 @@ func NewHTTPServer(transfersHandler TransfersHandler) *HTTPServer {
 }
 
 func (s *HTTPServer) MapRoutes() {
-	s.engine.GET("/transfers", s.transfersHandler.GetTransfersByUserID) // ?user_id=1234
 	s.engine.GET("/transfers/:id", s.transfersHandler.GetByID)
 	s.engine.POST("/transfers", s.transfersHandler.Create)
 	s.engine.PUT("/transfers/:id", s.transfersHandler.Update)

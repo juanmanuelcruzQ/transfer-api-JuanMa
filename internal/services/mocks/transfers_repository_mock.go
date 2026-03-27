@@ -1,0 +1,274 @@
+package mocks
+
+import (
+	context "context"
+	models "transfers-api/internal/models"
+
+	mock "github.com/stretchr/testify/mock"
+)
+
+type TransfersRepositoryMock struct {
+	mock.Mock
+}
+
+type TransfersRepositoryMock_Expecter struct {
+	mock *mock.Mock
+}
+
+func (_m *TransfersRepositoryMock) EXPECT() *TransfersRepositoryMock_Expecter {
+	return &TransfersRepositoryMock_Expecter{mock: &_m.Mock}
+}
+
+func (_m *TransfersRepositoryMock) Create(ctx context.Context, transfer models.Transfer) (string, error) {
+	ret := _m.Called(ctx, transfer)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Create")
+	}
+
+	var r0 string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, models.Transfer) (string, error)); ok {
+		return rf(ctx, transfer)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, models.Transfer) string); ok {
+		r0 = rf(ctx, transfer)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, models.Transfer) error); ok {
+		r1 = rf(ctx, transfer)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+type TransfersRepositoryMock_Create_Call struct {
+	*mock.Call
+}
+
+func (_e *TransfersRepositoryMock_Expecter) Create(ctx interface{}, transfer interface{}) *TransfersRepositoryMock_Create_Call {
+	return &TransfersRepositoryMock_Create_Call{Call: _e.mock.On("Create", ctx, transfer)}
+}
+
+func (_c *TransfersRepositoryMock_Create_Call) Run(run func(ctx context.Context, transfer models.Transfer)) *TransfersRepositoryMock_Create_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(models.Transfer))
+	})
+	return _c
+}
+
+func (_c *TransfersRepositoryMock_Create_Call) Return(_a0 string, _a1 error) *TransfersRepositoryMock_Create_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *TransfersRepositoryMock_Create_Call) RunAndReturn(run func(context.Context, models.Transfer) (string, error)) *TransfersRepositoryMock_Create_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+func (_m *TransfersRepositoryMock) Delete(ctx context.Context, id string) error {
+	ret := _m.Called(ctx, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Delete")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+type TransfersRepositoryMock_Delete_Call struct {
+	*mock.Call
+}
+
+func (_e *TransfersRepositoryMock_Expecter) Delete(ctx interface{}, id interface{}) *TransfersRepositoryMock_Delete_Call {
+	return &TransfersRepositoryMock_Delete_Call{Call: _e.mock.On("Delete", ctx, id)}
+}
+
+func (_c *TransfersRepositoryMock_Delete_Call) Run(run func(ctx context.Context, id string)) *TransfersRepositoryMock_Delete_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *TransfersRepositoryMock_Delete_Call) Return(_a0 error) *TransfersRepositoryMock_Delete_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *TransfersRepositoryMock_Delete_Call) RunAndReturn(run func(context.Context, string) error) *TransfersRepositoryMock_Delete_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+func (_m *TransfersRepositoryMock) GetByID(ctx context.Context, id string) (models.Transfer, error) {
+	ret := _m.Called(ctx, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetByID")
+	}
+
+	var r0 models.Transfer
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (models.Transfer, error)); ok {
+		return rf(ctx, id)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) models.Transfer); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(models.Transfer)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+type TransfersRepositoryMock_GetByID_Call struct {
+	*mock.Call
+}
+
+func (_e *TransfersRepositoryMock_Expecter) GetByID(ctx interface{}, id interface{}) *TransfersRepositoryMock_GetByID_Call {
+	return &TransfersRepositoryMock_GetByID_Call{Call: _e.mock.On("GetByID", ctx, id)}
+}
+
+func (_c *TransfersRepositoryMock_GetByID_Call) Run(run func(ctx context.Context, id string)) *TransfersRepositoryMock_GetByID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *TransfersRepositoryMock_GetByID_Call) Return(_a0 models.Transfer, _a1 error) *TransfersRepositoryMock_GetByID_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *TransfersRepositoryMock_GetByID_Call) RunAndReturn(run func(context.Context, string) (models.Transfer, error)) *TransfersRepositoryMock_GetByID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+func (_m *TransfersRepositoryMock) GetTransfersByUserID(ctx context.Context, userID string) ([]models.Transfer, error) {
+	ret := _m.Called(ctx, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetTransfersByUserID")
+	}
+
+	var r0 []models.Transfer
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) ([]models.Transfer, error)); ok {
+		return rf(ctx, userID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) []models.Transfer); ok {
+		r0 = rf(ctx, userID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]models.Transfer)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+type TransfersRepositoryMock_GetTransfersByUserID_Call struct {
+	*mock.Call
+}
+
+func (_e *TransfersRepositoryMock_Expecter) GetTransfersByUserID(ctx interface{}, userID interface{}) *TransfersRepositoryMock_GetTransfersByUserID_Call {
+	return &TransfersRepositoryMock_GetTransfersByUserID_Call{Call: _e.mock.On("GetTransfersByUserID", ctx, userID)}
+}
+
+func (_c *TransfersRepositoryMock_GetTransfersByUserID_Call) Run(run func(ctx context.Context, userID string)) *TransfersRepositoryMock_GetTransfersByUserID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *TransfersRepositoryMock_GetTransfersByUserID_Call) Return(_a0 []models.Transfer, _a1 error) *TransfersRepositoryMock_GetTransfersByUserID_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *TransfersRepositoryMock_GetTransfersByUserID_Call) RunAndReturn(run func(context.Context, string) ([]models.Transfer, error)) *TransfersRepositoryMock_GetTransfersByUserID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+func (_m *TransfersRepositoryMock) Update(ctx context.Context, transfer models.Transfer) error {
+	ret := _m.Called(ctx, transfer)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Update")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, models.Transfer) error); ok {
+		r0 = rf(ctx, transfer)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+type TransfersRepositoryMock_Update_Call struct {
+	*mock.Call
+}
+
+func (_e *TransfersRepositoryMock_Expecter) Update(ctx interface{}, transfer interface{}) *TransfersRepositoryMock_Update_Call {
+	return &TransfersRepositoryMock_Update_Call{Call: _e.mock.On("Update", ctx, transfer)}
+}
+
+func (_c *TransfersRepositoryMock_Update_Call) Run(run func(ctx context.Context, transfer models.Transfer)) *TransfersRepositoryMock_Update_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(models.Transfer))
+	})
+	return _c
+}
+
+func (_c *TransfersRepositoryMock_Update_Call) Return(_a0 error) *TransfersRepositoryMock_Update_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *TransfersRepositoryMock_Update_Call) RunAndReturn(run func(context.Context, models.Transfer) error) *TransfersRepositoryMock_Update_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+func NewTransfersRepositoryMock(t interface {
+	mock.TestingT
+	Cleanup(func())
+}) *TransfersRepositoryMock {
+	mock := &TransfersRepositoryMock{}
+	mock.Mock.Test(t)
+
+	t.Cleanup(func() { mock.AssertExpectations(t) })
+
+	return mock
+}
