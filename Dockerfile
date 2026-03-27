@@ -10,16 +10,19 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 go build -o app ./cmd/app
+RUN CGO_ENABLED=0 go build -o /app/bin/app ./cmd/app
 
 
 # ---------- RUNTIME ----------
-FROM scratch
+FROM alpine:3.20
 
 WORKDIR /app
 
-COPY --from=builder /app/app .
+RUN apk add --no-cache ca-certificates
+
+COPY . /app
+COPY --from=builder /app/bin/app /app/bin/app
 
 EXPOSE 8080
 
-ENTRYPOINT ["/app/app"]
+ENTRYPOINT ["/app/bin/app"]

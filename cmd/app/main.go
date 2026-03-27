@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"transfers-api/internal/config"
 	"transfers-api/internal/handlers"
 	"transfers-api/internal/logging"
@@ -38,6 +39,11 @@ func main() {
 	server.MapRoutes()
 	logger.Infof("server created, running %s@%s", version.AppName, version.Version)
 
+	port := os.Getenv("App_PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	// run server
-	server.Run(":8080")
+	server.Run(":" + port)
 }

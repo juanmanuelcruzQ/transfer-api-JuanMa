@@ -18,9 +18,38 @@ type TransfersCCacheRepo struct {
 	ttl   time.Duration
 }
 
-// GetByUserID implements [services.TransfersRepository].
-func (r *TransfersCCacheRepo) GetByUserID(ctx context.Context, userID string) (models.Transfer, error) {
-	panic("unimplemented")
+func (r *TransfersCCacheRepo) GetTransfersByUserID(ctx context.Context, userID string) ([]models.Transfer, error) {
+	_ = ctx
+
+	if userID == "" {
+		return nil, fmt.Errorf("userID is required")
+	}
+
+	var transfers []models.Transfer
+
+	r.cache.ForEachFunc(func(key string, item *ccache.Item[models.Transfer]) bool {
+		if item == nil {
+			return true
+		}
+
+		if item.Expired() {
+			r.cache.Delete(key)
+			return true
+		}
+
+		transfer := item.Value()
+		if transfer.SenderID == userID || transfer.ReceiverID == userID {
+			transfers = append(transfers, cloneTransfer(transfer))
+		}
+
+		return true
+	})
+
+	if len(transfers) == 0 {
+		return nil, fmt.Errorf("transfers not found for userID %s: %w", userID, known_errors.ErrNotFound)
+	}
+
+	return transfers, nil
 }
 
 func NewTransfersCCacheRepository(cfg config.CCache) *TransfersCCacheRepo {
